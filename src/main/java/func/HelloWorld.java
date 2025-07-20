@@ -15,10 +15,12 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// http://localhost:8080?url=https://scroogexhtml.com/rtf/features-fonts.rtf
-
-// http://localhost:8080?url=https%3A%2F%2Fscroogexhtml.com%2Frtf%2Ffeatures-fonts.rtf
-
+/**
+ * This Java class implements a Google Cloud Function (HttpFunction) that converts an RTF document 
+ * (from a specific URL) to HTML using the ScroogeXHTML library. 
+ * The function reads an RTF file from a query parameter URL, converts it, and responds with the 
+ * HTML or usage instructions.
+ */
 public class HelloWorld implements HttpFunction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HelloWorld.class);
