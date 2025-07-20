@@ -86,7 +86,7 @@ public class HelloWorld implements HttpFunction {
                 writer.write("</body></html>");
             }
         } else {
-            // Display usage instructions if thee URL parameter is invalid
+            // Display usage instructions if the URL parameter is invalid
             response.setStatusCode(400); // Bad Request
             BufferedWriter writer = response.getWriter();
             writer.write("<html><body>");
