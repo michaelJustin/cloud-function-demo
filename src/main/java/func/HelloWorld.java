@@ -37,6 +37,16 @@ public class HelloWorld implements HttpFunction {
               border-collapse: collapse;
             }""";
 
+    /**
+     * Handles HTTP requests to convert an RTF document to HTML.
+     * Only URLs starting with https://scroogexhtml.com/rtf/ are accepted. 
+     * This is intentional to limit the scope of the function to a specific set of RTF files hosted on the ScroogeXHTML 
+     * website.
+     * 
+     * @param request The HTTP request containing query parameters.
+     * @param response The HTTP response to write the HTML output or usage instructions.
+     * @throws IOException If an I/O error occurs while reading the RTF file or writing the response.
+     */
     @Override
     public void service(HttpRequest request, HttpResponse response) throws IOException {
 
@@ -44,11 +54,7 @@ public class HelloWorld implements HttpFunction {
             // Display usage instructions if the URL parameter is missing
             response.setStatusCode(400); // Bad Request
             BufferedWriter writer = response.getWriter();
-            writer.write("<html><body>");
-            writer.write("<h1>RTF to HTML Converter</h1>");
-            writer.write("<p>Please provide a 'url' parameter pointing to an RTF file.</p>");
-            writer.write("<p>Example usage: <code>?url=https://scroogexhtml.com/rtf/features-fonts.rtf</code></p>");
-            writer.write("</body></html>");
+            writeInstructions(writer);
             return;
         }
 
@@ -71,11 +77,7 @@ public class HelloWorld implements HttpFunction {
                     // Display usage instructions if the input stream is null
                     response.setStatusCode(500);
                     BufferedWriter writer = response.getWriter();
-                    writer.write("<html><body>");
-                    writer.write("<h1>RTF to HTML Converter</h1>");
-                    writer.write("<p>Please provide a 'url' parameter pointing to an RTF file.</p>");
-                    writer.write("<p>Example usage: <code>?url=https://scroogexhtml.com/rtf/features-fonts.rtf</code></p>");
-                    writer.write("</body></html>");
+                    writeInstructions(writer);
                 }
             } catch (Exception e) {
                 response.setStatusCode(500);
@@ -89,14 +91,29 @@ public class HelloWorld implements HttpFunction {
             // Display usage instructions if the URL parameter is invalid
             response.setStatusCode(400); // Bad Request
             BufferedWriter writer = response.getWriter();
-            writer.write("<html><body>");
-            writer.write("<h1>RTF to HTML Converter</h1>");
-            writer.write("<p>Please provide a 'url' parameter pointing to an RTF file.</p>");
-            writer.write("<p>Example usage: <code>?url=https://scroogexhtml.com/rtf/features-fonts.rtf</code></p>");
-            writer.write("</body></html>");
+            writeInstructions(writer);
         }
     }
 
+    /**
+     * Writes usage instructions to the response writer.
+     * 
+     * @param writer The BufferedWriter to write the instructions to.
+     * @throws IOException If an I/O error occurs while writing the instructions.
+     */
+    private static void writeInstructions(BufferedWriter writer) throws IOException {
+        writer.write("<html><body>");
+        writer.write("<h1>RTF to HTML Converter</h1>");
+        writer.write("<p>Please provide a 'url' parameter pointing to an RTF file.</p>");
+        writer.write("<p>Example usage: <code>?url=https://scroogexhtml.com/rtf/features-fonts.rtf</code></p>");
+        writer.write("</body></html>");
+    }
+
+    /**
+     * Creates and configures a ScroogeXHTML instance for converting RTF to HTML.
+     * 
+     * @return A configured ScroogeXHTML instance.
+     */
     ScroogeXHTML createScrooge() {
 
         ScroogeXHTML scrooge = new ScroogeXHTML();
@@ -132,6 +149,12 @@ public class HelloWorld implements HttpFunction {
         return scrooge;
     }
 
+    /**
+     * Retrieves the RTF content from the specified URL and returns it as a ByteArrayInputStream.
+     * 
+     * @param url The URL of the RTF file.
+     * @return A ByteArrayInputStream containing the RTF content.
+     */
     ByteArrayInputStream getCurrentRtf(String url) {
         byte[] fileContent;
         try {
