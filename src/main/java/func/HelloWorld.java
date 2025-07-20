@@ -7,6 +7,7 @@ import com.google.cloud.functions.HttpResponse;
 import java.io.*;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.scroogexhtml.ScroogeXHTML;
@@ -42,11 +43,12 @@ public class HelloWorld implements HttpFunction {
      * Only URLs starting with https://scroogexhtml.com/rtf/ are accepted. 
      * This is intentional to limit the scope of the function to a specific set of RTF files hosted on the ScroogeXHTML 
      * website.
-     * 
+     *
      * @param request The HTTP request containing query parameters.
      * @param response The HTTP response to write the HTML output or usage instructions.
      * @throws IOException If an I/O error occurs while reading the RTF file or writing the response.
      */
+    @SuppressWarnings("JavadocLinkAsPlainText")
     @Override
     public void service(HttpRequest request, HttpResponse response) throws IOException {
 
@@ -70,8 +72,8 @@ public class HelloWorld implements HttpFunction {
                 ByteArrayInputStream rtfInputStream = getCurrentRtf(url);
                 if (rtfInputStream != null) {
                     ScroogeXHTML s = createScrooge();
-                    String html = s.convert(rtfInputStream);
-                    BufferedWriter writer = response.getWriter();
+                    byte[] html = s.convert(rtfInputStream).getBytes(StandardCharsets.UTF_8);
+                    OutputStream writer = response.getOutputStream();
                     writer.write(html);
                 } else {
                     // Display usage instructions if the input stream is null
